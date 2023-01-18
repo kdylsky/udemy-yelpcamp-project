@@ -17,20 +17,20 @@ app.set("views",path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.get("/", (req,res)=>{
-    res.render("home")
+    res.render("home") 
 })
 
-app.get("/makecampground", async(req,res)=>{
-    const newcampground = await new Campground({title:"new", price:"asd", description:"good", location:"korea"})
-    newcampground.save()
-        .then(data=>{
-            console.log(data)
-        })
-        .catch(err=>{
-            console.log(err.message)
-        })
-    res.send("it work")
+app.get("/campgrounds" , async(req,res)=>{
+    const campgrounds = await Campground.find({});
+    res.render("campgrounds/index", { campgrounds })
 })
+
+app.get("/campgrounds/:id", async(req,res)=>{
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    res.render("campgrounds/detail", {campground});
+})
+
 
 app.listen(3000, ()=>{
     console.log("SERVING 3000 PORT")  
