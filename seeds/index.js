@@ -25,6 +25,7 @@ const seedDB = async()=>{
             title : `${sample(descriptors)} ${sample(places)}`,
             description: "This is Test Web Site Page welcome my Yelp Camp Site",
             price : price,
+            images: "https://source.unsplash.com/collection/483251"
             // images: [
             //     {
             //       url: 'https://res.cloudinary.com/dsq1ga8v1/image/upload/v1673369173/YelpCamp/xxn9ybypcjhuqt1fajv0.jpg',

@@ -41,7 +41,7 @@ app.post("/campgrounds", async(req,res)=>{
     const {campground} = req.body
     const newCampground = await new Campground(campground); 
     newCampground.save();
-    res.redirect(`/campgrounds /${newCampground._id}`);
+    res.redirect(`/campgrounds/${newCampground._id}`);
 })
 
 app.get("/campgrounds/:id", async(req,res)=>{
@@ -66,7 +66,7 @@ app.put("/campgrounds/:id", async(req,res)=>{
 app.delete("/campgrounds/:id", async(req,res)=>{
     const { id } = req.params;
     const campground = await Campground.findByIdAndDelete(id);
-    res.redirect(`/campgrounds`);
+    res.redirect("/campgrounds");
 })
 
 app.listen(3000, ()=>{
