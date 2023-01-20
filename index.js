@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const mongoose = require("mongoose");
+const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override");
 const Campground = require("./models/campground");
 
@@ -12,8 +13,10 @@ mongoose.connect('mongodb://127.0.0.1:27017/yelpcamp-project')
     .catch((err)=>{
         console.log("OH mongoDB ERR")
         console.log(err)
-    })
+    });
 
+//ejs-mate를 사용하기 위하 세팅
+app.engine("ejs", ejsMate)
 app.set("views",path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
