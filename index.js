@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override");
 const Campground = require("./models/campground");
+const ExpressError = require("./utils/ExpressError");
+const wrapAsync = require("./utils/wrapAsync");
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpcamp-project')
     .then(()=>{
@@ -22,53 +24,70 @@ app.set("view engine", "ejs");
 
 //req.body는 비어있는 것이 기본이기 때문에 파싱을 해주어야 한다.
 app.use(express.urlencoded({extended:true}));
+app.use(express.json());
 app.use(methodOverride("_method"));
 
 app.get("/", (req,res)=>{
     res.render("home") 
 })
 
-app.get("/campgrounds" , async(req,res)=>{
+app.get("/campgrounds" , wrapAsync(async(req,res)=>{
     const campgrounds = await Campground.find({});
     res.render("campgrounds/index", { campgrounds })
-})
+}));
 
 app.get("/campgrounds/new", (req,res)=>{
     res.render("campgrounds/new");
-})
+});
 
-app.post("/campgrounds", async(req,res)=>{
-    const {campground} = req.body
-    const newCampground = await new Campground(campground); 
-    newCampground.save();
+app.post("/campgrounds", wrapAsync(async(req,res,next)=>{
+    if(!req.body.campground) throw new ExpressError("Invalid Campground Data", 400);
+    const {campground} = req.body;
+    const newCampground = new Campground(campground); 
+    await newCampground.save();
     res.redirect(`/campgrounds/${newCampground._id}`);
-})
+}));
 
-app.get("/campgrounds/:id", async(req,res)=>{
+app.get("/campgrounds/:id", wrapAsync(async(req,res)=>{
     const { id } = req.params;
     const campground = await Campground.findById(id);
     res.render("campgrounds/detail", {campground});
-})
+}));
 
-app.get("/campgrounds/:id/edit", async(req,res)=>{
+app.get("/campgrounds/:id/edit", wrapAsync(async(req,res)=>{
     const { id } = req.params;
     const campground = await Campground.findById(id);
     res.render("campgrounds/edit", {campground});
-})
+}));
 
-app.put("/campgrounds/:id", async(req,res)=>{
+app.put("/campgrounds/:id", wrapAsync(async(req,res)=>{
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground}, {new:true});
     // await Campground.findByIdAndUpdate(id, req.body.campground);
     res.redirect(`/campgrounds/${campground._id}`)
-})
+}));
 
-app.delete("/campgrounds/:id", async(req,res)=>{
+app.delete("/campgrounds/:id", wrapAsync(async(req,res)=>{
     const { id } = req.params;
     const campground = await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
+}));
+
+
+// 404를 추가하는 방법
+// 알 수 없는 url로 접근할 경우, 상단의 요청이 닿지 않은 경우에만 실행된다.
+// next()를 호출함으로써 밑에 있는 제네릭 오류 핸들러가 실행된다.
+app.all("*", (req,res,next)=>{
+    next(new ExpressError("Page Not Found", 404));
+})
+
+// try...catch를 해서 비동기 함수를 감싸지 않으면 정의한 에러 핸들러로 들어오지 않는다.
+app.use((err, req, res, next)=>{
+    const { message="Something is Wrong", status=500} = err;
+    res.status(status).send(message);
 })
 
 app.listen(3000, ()=>{
     console.log("SERVING 3000 PORT")  
 })
+
