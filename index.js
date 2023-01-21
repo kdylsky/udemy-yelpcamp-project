@@ -83,8 +83,11 @@ app.all("*", (req,res,next)=>{
 
 // try...catch를 해서 비동기 함수를 감싸지 않으면 정의한 에러 핸들러로 들어오지 않는다.
 app.use((err, req, res, next)=>{
-    const { message="Something is Wrong", status=500} = err;
-    res.status(status).send(message);
+    const { status=500 } = err;
+    if(!err.message){
+        err.message = "Something is Wrong";
+    }
+    res.status(status).render("error", {err});
 })
 
 app.listen(3000, ()=>{
