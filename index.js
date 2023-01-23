@@ -5,9 +5,10 @@ const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override");
 const Campground = require("./models/campground");
+const Review = require("./models/review");
 const ExpressError = require("./utils/ExpressError");
 const wrapAsync = require("./utils/wrapAsync");
-const {campgroundSchema} = require("./schemas.js");
+const {campgroundSchema, reviewSchema} = require("./schemas.js");
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpcamp-project')
     .then(()=>{
@@ -37,6 +38,19 @@ const validateCampground = (req, res, next) => {
         next();
     }
 }
+
+const validateReview = (req,res, next)=>{
+    const {error} = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
+
+
+// CAMPGROUND ROUTERS
 
 app.get("/", (req,res)=>{
     res.render("home") 
@@ -83,6 +97,21 @@ app.delete("/campgrounds/:id", wrapAsync(async(req,res)=>{
     const campground = await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
 }));
+
+
+
+// REVIEW ROUTERS
+app.post("/campgrounds/:id/reviews", validateReview, wrapAsync(async(req,res)=>{
+    const {id} = req.params;
+    const campground = await Campground.findById(id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`)
+}));
+
+
 
 // 404를 추가하는 방법
 // 알 수 없는 url로 접근할 경우, 상단의 요청이 닿지 않은 경우에만 실행된다.
