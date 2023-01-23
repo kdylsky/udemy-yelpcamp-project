@@ -112,6 +112,17 @@ app.post("/campgrounds/:id/reviews", validateReview, wrapAsync(async(req,res)=>{
     res.redirect(`/campgrounds/${campground._id}`)
 }));
 
+// 리뷰를 지우게 되면 참조하고 있는 캠핑장에서도 해당 리뷰id를 지워 주어야 한다.
+// 이때 사용할 수 있는 연산자 중 하나가 pull 연산자로 배열 수정 연산자이다.
+// 배열에 있는 모든 인스턴스 중에서 특정 조건을 만족하는 값을 지우는 것이다.
+app.delete("/campgrounds/:id/reviews/:reviewId",wrapAsync(async(req,res)=>{
+    const {id, reviewId} = req.params;
+    await Campground.findByIdAndUpdate(id, {$pull:{reviews: reviewId}})
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`);
+    
+}))
+
 
 
 // 404를 추가하는 방법
