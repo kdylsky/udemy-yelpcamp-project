@@ -7,9 +7,14 @@ const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
 
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+
 const ExpressError = require("./utils/ExpressError");
 const campgroundsRouters = require("./routes/campgrounds")
 const reviewRouters = require("./routes/reviews");
+
+const User = require("./models/user");
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpcamp-project')
     .then(()=>{
@@ -56,6 +61,19 @@ const sessionCongif = {
 }
 app.use(session(sessionCongif));
 
+// session설정 후에 있어야 한다.
+// passport 초기화하기
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+
+// passportLocalMongoose플로그인 해서 메서드가 추가된것이다.
+// 사용자를 어떻게 직렬화하는지 알려준다.
+passport.serializeUser(User.serializeUser())
+// 사용자를 역직렬화하는지 알려준다.
+passport.deserializeUser(User.deserializeUser())
+
 // flash설정하기
 app.use(flash());
 app.use((req, res, next)=>{
@@ -64,6 +82,14 @@ app.use((req, res, next)=>{
     next();
 })
 
+// app.get("/fakeuser", async(req,res)=>{
+//     const user = new User({email:"kim@gmail.com", username:"kim"})
+//     // passportLocalMongoose플로그인 해서 메서드가 추가된것이다. 
+//     // 전체 사용자 모델 인스턴스와 비밀번호를 매개변수로 받는다.
+//     // 해시화해서 저장한다. bcrypt를 사용하지 않고 다른 알고리즘을 사용한다.
+//     const newUser = await User.register(user, "kim")
+//     res.send(newUser);
+// })
 
 app.get("/", (req,res)=>{
     res.render("home") 
