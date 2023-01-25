@@ -38,8 +38,13 @@ router.post("/login", passport.authenticate("local",{failureFlash:true, failureR
     // 미들웨어가 로그인에 관한 과정을 모두 처리해준다.
     req.flash("success", "Welcome back to Campground!!!");
     res.redirect("/campgrounds");
-    
 }))
+
+router.post("/logout", (req,res)=>{
+    req.logout()
+    req.flash("success", "Bye!! Bye!!")
+    res.redirect("/campgrounds")
+})
 
 module.exports = router;
 
