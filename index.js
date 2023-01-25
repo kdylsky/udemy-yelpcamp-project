@@ -27,6 +27,9 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(methodOverride("_method"));
 
+//[Front] static 서비스 이용을 위한 설정
+app.use(express.static(path.join(__dirname, "public")))
+
 app.get("/", (req,res)=>{
     res.render("home") 
 })
