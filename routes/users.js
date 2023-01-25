@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 const wrapAsync = require("../utils/wrapAsync");
 const ExpressError = require("../utils/ExpressError");
-
+const passport = require("passport");
 
 router.get("/register", (req,res)=>{
     res.render("users/register")
@@ -25,6 +25,20 @@ router.post("/register", wrapAsync(async(req,res)=>{
         req.flash("error", e.message);
         res.redirect("/register")
     }
+}))
+
+router.get("/login", (req,res)=>{
+    res.render("users/login")
+})
+
+// passport에서 제공하는 미들웨어 메서드를 이용해서 로그인을 한다.
+// 전략을 명시적으로 알려주어야 한다.
+// 만약 전략이 여러개라면 여러개를 적으면 된다.
+router.post("/login", passport.authenticate("local",{failureFlash:true, failureRedirect:"/login"}), wrapAsync(async(req,res)=>{
+    // 미들웨어가 로그인에 관한 과정을 모두 처리해준다.
+    req.flash("success", "Welcome back to Campground!!!");
+    res.redirect("/campgrounds");
+    
 }))
 
 module.exports = router;
