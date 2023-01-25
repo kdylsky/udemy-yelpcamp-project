@@ -74,6 +74,9 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser())
 // 사용자를 역직렬화하는지 알려준다.
 passport.deserializeUser(User.deserializeUser())
+// 세션정보를 어떻게 저장하고 가져오는지를 결정하는 메서드들이다.
+
+
 
 // flash설정하기
 app.use(flash());
