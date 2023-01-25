@@ -81,6 +81,10 @@ passport.deserializeUser(User.deserializeUser())
 // flash설정하기
 app.use(flash());
 app.use((req, res, next)=>{
+    if (!['/login', '/register', '/'].includes(req.originalUrl)) {
+        console.log(req.originalUrl);
+        req.session.returnTo = req.originalUrl;
+    }
     res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
