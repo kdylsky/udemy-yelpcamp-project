@@ -29,8 +29,13 @@ router.post("/", isLoggeIn, validateCampground ,wrapAsync(async(req,res,next)=>{
 
 router.get("/:id", wrapAsync(async(req,res)=>{
     const { id } = req.params;
-    const campground = await Campground.findById(id).populate("reviews").populate("author");
-    
+    const campground = await Campground.findById(id).populate({
+        // reviews에서 참조하고 있는 author을 가지고 오기 위해서 중첩으로 populate를 해준다.
+        path: "reviews",
+        populate:{
+            path:"author"
+            }
+        }).populate("author");
     if (!campground){
         req.flash("error", "Cannot find that campground!");
         res.redirect("/campgrounds")
