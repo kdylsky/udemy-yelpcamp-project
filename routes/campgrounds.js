@@ -28,7 +28,10 @@ router.get("/new", isLoggeIn, (req,res)=>{
 router.post("/", isLoggeIn, validateCampground ,wrapAsync(async(req,res,next)=>{
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data", 400);
     const {campground} = req.body;
-    const newCampground = new Campground(campground); 
+    const newCampground = new Campground(campground);
+    // 로그인 한 상태이기 때문에 세션에서 로그인한 회원정보를 가지고 올 수 있다.
+    // const currentUser = req.user
+    newCampground.author = req.user._id;
     await newCampground.save();
     // flash 설정하기 
     req.flash("success", "Successfully made a new campgrounds");
@@ -37,7 +40,8 @@ router.post("/", isLoggeIn, validateCampground ,wrapAsync(async(req,res,next)=>{
 
 router.get("/:id", wrapAsync(async(req,res)=>{
     const { id } = req.params;
-    const campground = await Campground.findById(id).populate("reviews");
+    const campground = await Campground.findById(id).populate("reviews").populate("author");
+    console.log(campground)
     if (!campground){
         req.flash("error", "Cannot find that campground!");
         res.redirect("/campgrounds")

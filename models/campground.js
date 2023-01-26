@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const Review = require("./review");
+// const Review = require("./review");
+// const User = require("./user");
 
 const CampgroundSchema = new mongoose.Schema({
     title:{
@@ -26,7 +27,13 @@ const CampgroundSchema = new mongoose.Schema({
     reviews:[{
         type:mongoose.Schema.Types.ObjectId,
         ref: "Review"
-    }]
+    }],
+    // 한명의 유저는 여러개의 캠핑장을 소유할 수 있다.
+    // 1대다이다.
+    author:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
 });
 
 CampgroundSchema.post("findOneAndDelete",async function(doc){

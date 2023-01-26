@@ -16,11 +16,11 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)]
 
 const seedDB = async()=>{
     await Campground.deleteMany({});
-    for (let i=0; i<20; i++){
+    for (let i=0; i<10; i++){
         const random100 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random()*20) + 10;
         const camp =  new Campground({
-            // author : '63bd2388e1655b94ecd1a34c',
+            author : '63d0ece26d407c27e170e492',
             location: `${cities[random100].city}, ${cities[random100].state} `,
             title : `${sample(descriptors)} ${sample(places)}`,
             description: "This is Test Web Site Page welcome my Yelp Camp Site",
