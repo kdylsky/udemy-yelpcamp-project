@@ -49,7 +49,7 @@
             </div>
             <div class="mb-3">
                 <% campground.images.forEach(function(img, i){ %>
-                    <img src="<%= img.url %> " class="img-thumbnail"alt="">    
+                    <img src="<%= img.thumbnail %>" class="img-thumbnail"alt="">    
                     <div class="form-check-inline">
                         <!-- check된 value가 deleteImages[]에 들어가게 된다. -->
                         <input type="checkbox" id="img-<%= i %>" name="deleteImages[]" value="<%= img.filename%>">
