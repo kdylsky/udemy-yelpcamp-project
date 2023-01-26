@@ -1,4 +1,5 @@
 const Campground = require("../models/campground");
+const {cloudinary} = require("../cloudinary/index");
 
 module.exports.index = async(req,res)=>{
     const campgrounds = await Campground.find({});
@@ -56,15 +57,26 @@ module.exports.updateCampground = async(req,res)=>{
     const { id } = req.params;
     // await Campground.findByIdAndUpdate(id, req.body.campground);
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground}, {new:true});
-    
+    console.log(req.body)
     // req.files에 있는 데이터를 가지고 온다. 그리고 캠핑장객체에 저장한다.
     const imgs = req.files.map(f=>({url:f.path, filename:f.filename}));
     // 기존 이미지에 push 해주기
     campground.images.push(...imgs);
+    
+    // 데이터베이스 이미지 삭제하기
+    if(req.body.deleteImages){
+        // cloudly 이미지 삭제하기
+        for (let filename of req.body.deleteImages){
+            await cloudinary.uploader.destroy(filename);
+        }
+        await campground.updateOne({$pull:{image:{filename:{$in:req.body.deleteImages}}}})
+    }
+    
     await campground.save();
     req.flash("success", "Successfully updated campground");
     res.redirect(`/campgrounds/${campground._id}`)
 }
+
 
 module.exports.deleteCampground = async(req,res)=>{
     const { id } = req.params;
