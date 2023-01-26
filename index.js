@@ -36,6 +36,7 @@ app.set("view engine", "ejs");
 
 
 //req.body는 비어있는 것이 기본이기 때문에 파싱을 해주어야 한다.
+//폼데이터의 body를 받기 위한 것이다.
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(methodOverride("_method"));
