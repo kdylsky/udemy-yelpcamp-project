@@ -56,6 +56,12 @@ module.exports.updateCampground = async(req,res)=>{
     const { id } = req.params;
     // await Campground.findByIdAndUpdate(id, req.body.campground);
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground}, {new:true});
+    
+    // req.files에 있는 데이터를 가지고 온다. 그리고 캠핑장객체에 저장한다.
+    const imgs = req.files.map(f=>({url:f.path, filename:f.filename}));
+    // 기존 이미지에 push 해주기
+    campground.images.push(...imgs);
+    await campground.save();
     req.flash("success", "Successfully updated campground");
     res.redirect(`/campgrounds/${campground._id}`)
 }

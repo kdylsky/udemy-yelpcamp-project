@@ -42,7 +42,7 @@ router.get("/:id", wrapAsync(campgrounds.showCampground));
 
 router.get("/:id/edit", isLoggeIn, isAuthor, wrapAsync(campgrounds.renderEditForm));
 
-router.put("/:id", isLoggeIn, isAuthor, validateCampground, wrapAsync(campgrounds.updateCampground));
+router.put("/:id", isLoggeIn, isAuthor,upload.array("image"), validateCampground, wrapAsync(campgrounds.updateCampground));
 
 router.delete("/:id", isLoggeIn, isAuthor, wrapAsync(campgrounds.deleteCampground));
 
