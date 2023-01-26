@@ -25,17 +25,17 @@ const seedDB = async()=>{
             title : `${sample(descriptors)} ${sample(places)}`,
             description: "This is Test Web Site Page welcome my Yelp Camp Site",
             price : price,
-            images: "https://source.unsplash.com/collection/483251"
-            // images: [
-            //     {
-            //       url: 'https://res.cloudinary.com/dsq1ga8v1/image/upload/v1673369173/YelpCamp/xxn9ybypcjhuqt1fajv0.jpg',
-            //       filename: 'YelpCamp/xxn9ybypcjhuqt1fajv0',
-            //     },
-            //     {
-            //       url: 'https://res.cloudinary.com/dsq1ga8v1/image/upload/v1673369174/YelpCamp/isb3p5es3pij4gymyrih.jpg',
-            //       filename: 'YelpCamp/isb3p5es3pij4gymyrih',
-            //     }
-            //   ],
+            // images: "https://source.unsplash.com/collection/483251"
+            images: [
+                {
+                  url: 'https://res.cloudinary.com/dsq1ga8v1/image/upload/v1674713648/YelpCamp/rlrf8ht8gaq2efn3if4d.jpg',
+                  filename: 'YelpCamp/rlrf8ht8gaq2efn3if4d',
+                },
+                {
+                  url: 'https://res.cloudinary.com/dsq1ga8v1/image/upload/v1674713649/YelpCamp/jpk2reri5lo8and60i8m.jpg',
+                  filename: 'YelpCamp/jpk2reri5lo8and60i8m',
+                }
+              ],
         })
         await camp.save();
     }
