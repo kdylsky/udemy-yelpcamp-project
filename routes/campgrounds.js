@@ -18,7 +18,8 @@ router.get("/" , wrapAsync(campgrounds.index));
 
 router.get("/new", isLoggeIn, campgrounds.renderNewForm);
 
-// router.post("/", isLoggeIn, validateCampground ,wrapAsync(campgrounds.createCampground));
+router.post("/", isLoggeIn, upload.array("image"), validateCampground,  wrapAsync(campgrounds.createCampground));
+
 //"image"는 폼에 있는 name명이다.
 //미들웨어가 request에 file속성을 추가하고 body에도 추가한다.
 
@@ -30,12 +31,12 @@ router.get("/new", isLoggeIn, campgrounds.renderNewForm);
 // })
 
 // 다중 파일
-router.post("/", upload.array("image"),(req,res)=>{
-    console.log(req.body)
-    console.log()
-    console.log(req.files)
-    res.send("it worked")
-})
+// router.post("/", upload.array("image"),(req,res)=>{
+//     console.log(req.body)
+//     console.log()
+//     console.log(req.files)
+//     res.send("it worked")
+// })
 
 router.get("/:id", wrapAsync(campgrounds.showCampground));
 

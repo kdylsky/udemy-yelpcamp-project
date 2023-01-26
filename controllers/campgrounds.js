@@ -13,6 +13,10 @@ module.exports.createCampground = async(req,res,next)=>{
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data", 400);
     const {campground} = req.body;
     const newCampground = new Campground(campground);
+    
+    // req.files에 있는 데이터를 가지고 온다. 그리고 캠핑장객체에 저장한다.
+    newCampground.images = req.files.map(f=>({url:f.path, filename:f.filename}))
+
     // 로그인 한 상태이기 때문에 세션에서 로그인한 회원정보를 가지고 올 수 있다.
     // const currentUser = req.user
     newCampground.author = req.user._id;
