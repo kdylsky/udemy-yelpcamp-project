@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-// const Review = require("./review");
-// const User = require("./user");
+const Review = require("./review");
+const User = require("./user");
 
 const CampgroundSchema = new mongoose.Schema({
     title:{
@@ -37,6 +37,7 @@ const CampgroundSchema = new mongoose.Schema({
 });
 
 CampgroundSchema.post("findOneAndDelete",async function(doc){
+    console.log(doc)
     if(doc){
         await Review.deleteMany({
             _id:{

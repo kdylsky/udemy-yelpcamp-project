@@ -4,26 +4,15 @@ const router = express.Router({mergeParams:true});
 const Campground = require("../models/campground");
 const Review = require("../models/review");
 const wrapAsync = require("../utils/wrapAsync");
-const ExpressError = require("../utils/ExpressError");
-const { reviewSchema } = require("../schemas.js")
+const { isLoggeIn, isAuthor, validateReview } = require("../middleware");
 
-const validateReview = (req,res, next)=>{
-    const {error} = reviewSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    } else {
-        next();
-    }
-}
+
 
 // REVIEW ROUTERS
 router.post("/", validateReview, wrapAsync(async(req,res)=>{
     const {id} = req.params;
     const campground = await Campground.findById(id);
     const review = new Review(req.body.review);
-    console.log(campground)
-    console.log(review)
     campground.reviews.push(review);
     await review.save();
     await campground.save();

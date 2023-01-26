@@ -84,6 +84,7 @@ app.use((req, res, next)=>{
     if (!['/login', '/register', '/'].includes(req.originalUrl)) {
         req.session.returnTo = req.originalUrl;
     }
+    // 랜더링시 탬플릿에서 사용할 수 있는 전역변수 만들기
     res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");

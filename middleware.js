@@ -1,3 +1,7 @@
+const Campground = require("./models/campground");
+const ExpressError = require("./utils/ExpressError");
+const { campgroundSchema, reviewSchema } = require("./schemas.js")
+
 module.exports.isLoggeIn = (req, res, next)=>{
     // passport에 의해서 자동으로 세련에서 역직렬화된 유저 데이터가 들어온다.
     // console.log(req.user)
@@ -9,4 +13,32 @@ module.exports.isLoggeIn = (req, res, next)=>{
     next();
 }
 
+module.exports.validateCampground = (req, res, next) => {
+    const { error } = campgroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
 
+module.exports.isAuthor = async(req,res,next)=>{
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    if(!campground.author.equals(req.user._id)){
+        req.flash("error", "You do not have permission to that");
+        return res.redirect(`/campgrounds/${id}`);
+    };
+    next();
+}
+
+module.exports.validateReview = (req,res, next)=>{
+    const {error} = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
