@@ -32,6 +32,7 @@ router.post("/", upload.array("image"),(req,res)=>{
     console.log()
     console.log(req.files)
 })
+
 router.get("/:id", wrapAsync(campgrounds.showCampground));
 
 router.get("/:id/edit", isLoggeIn, isAuthor, wrapAsync(campgrounds.renderEditForm));

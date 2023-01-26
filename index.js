@@ -1,3 +1,9 @@
+// process.env.NODE_ENV 는 환경변수이다.
+// 개발과 배포의 환경에 따라서 다르게 환경변수를 사용한다.
+if (process.env.NODE_ENV !== "production"){
+    require("dotenv").config();
+}
+
 const express = require("express");
 const app = express();
 const path = require("path");
