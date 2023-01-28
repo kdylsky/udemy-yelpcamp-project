@@ -1,5 +1,8 @@
 const Campground = require("../models/campground");
 const {cloudinary} = require("../cloudinary/index");
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({accessToken:mapBoxToken});
 
 module.exports.index = async(req,res)=>{
     const campgrounds = await Campground.find({});
@@ -11,10 +14,16 @@ module.exports.renderNewForm = (req,res)=>{
 }
 
 module.exports.createCampground = async(req,res,next)=>{
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+      }).send()
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data", 400);
     const {campground} = req.body;
     const newCampground = new Campground(campground);
     
+    //GeoJson형태로 위치 데이터를 저장한다.
+    newCampground.geometry = geoData.body.features[0].geometry
     // req.files에 있는 데이터를 가지고 온다. 그리고 캠핑장객체에 저장한다.
     newCampground.images = req.files.map(f=>({url:f.path, filename:f.filename}))
 

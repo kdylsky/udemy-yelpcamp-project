@@ -28,9 +28,17 @@ const CampgroundSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    location:{
-        type:String,
-        required:true
+    //GeoJson형태를 그대로 사용한다.
+    geometry: {
+        type: {
+          type: String, // Don't do `{ location: { type: String } }`
+          enum: ['Point'], // 'location.type' must be 'Point'
+          required: true
+        },
+        coordinates: {
+          type: [Number],
+          required: true
+        }
     },
     // 캠핑장에서 리뷰를 불러올 수 있다.
     reviews:[{
