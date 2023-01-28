@@ -28,6 +28,7 @@ const CampgroundSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    location: String,
     //GeoJson형태를 그대로 사용한다.
     geometry: {
         type: {

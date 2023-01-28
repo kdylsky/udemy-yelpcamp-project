@@ -119,5 +119,8 @@
     </div>
     <script>
         const mapToken = `<%-process.env.MAPBOX_TOKEN%>`
+        const campgroundtitle = `<%-campground.title%>`
+        const campgroundLng = parseFloat('<%- campground.geometry.coordinates[0] %>');
+        const campgroundLat = parseFloat('<%- campground.geometry.coordinates[1] %>');
     </script>
     <script src="/javascripts/showPageMap.js"></script>

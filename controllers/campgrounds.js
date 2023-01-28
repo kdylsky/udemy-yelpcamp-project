@@ -23,7 +23,7 @@ module.exports.createCampground = async(req,res,next)=>{
     const newCampground = new Campground(campground);
     
     //GeoJson형태로 위치 데이터를 저장한다.
-    newCampground.geometry = geoData.body.features[0].geometry
+    newCampground.geometry = geoData.body.features[0].geometry;
     // req.files에 있는 데이터를 가지고 온다. 그리고 캠핑장객체에 저장한다.
     newCampground.images = req.files.map(f=>({url:f.path, filename:f.filename}))
 

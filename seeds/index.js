@@ -24,6 +24,10 @@ const seedDB = async()=>{
             location: `${cities[random100].city}, ${cities[random100].state} `,
             title : `${sample(descriptors)} ${sample(places)}`,
             description: "This is Test Web Site Page welcome my Yelp Camp Site",
+            geometry: { 
+                type : "Point", 
+                coordinates : [ 129.0752365, 35.1799528 ] 
+            },
             price : price,
             // images: "https://source.unsplash.com/collection/483251"
             images: [
